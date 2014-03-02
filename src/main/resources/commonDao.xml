@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:p="http://www.springframework.org/schema/p" 
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+        xmlns:util="http://www.springframework.org/schema/util"
+        xsi:schemaLocation="
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/tx  http://www.springframework.org/schema/tx/spring-tx.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/jdbc  http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+            http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+            http://www.springframework.org/schema/util  http://www.springframework.org/schema/util/spring-util.xsd">
+
+   
+    <context:property-placeholder location="classpath:hsql_database.properties" order="1000" />
+    
+    <bean id="defaultConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean" p:location="classpath:hsql_database.properties"/>  
+   
+    
+    <tx:annotation-driven transaction-manager="transactionManager" />   
+
+    <jpa:repositories base-package="pl.java.scalatech.repository" />
+         
+    <bean id="hibernateJpaAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" p:generateDdl="${hibernate.generateDdl}" p:showSql="${hibernate.showSql}"
+        p:databasePlatform="${hibernate.dialect}" />
+            
+    <bean id="jpaDialect" class="pl.java.scalatech.dao.dialect.CustomHibernateJpaDialect" />
+
+    <bean  class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+    <bean id="entityManagerFactory"
+        class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+        p:persistenceXmlLocation="classpath*:META-INF/persistence.xml"
+        p:persistenceUnitName="unitPU" p:dataSource-ref="dataSource"
+        p:jpaDialect-ref="jpaDialect" p:jpaVendorAdapter-ref="hibernateJpaAdapter"
+        p:jpaProperties-ref="jpaProperties" />
+
+
+    <util:properties id="jpaProperties">
+        <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+        <prop key="hibernate.show_sql">${hibernate.showSql}</prop>
+        <prop key="hibernate.format_sql">true</prop>
+        <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+        <prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+        <prop key="org.hibernate.envers.auditTablePrefix"></prop>
+        <prop key="org.hibernate.envers.auditTableSuffix">_HISTORY</prop>  
+        <prop key="hibernate.generate_statistics">${hibernate.statistics}</prop>     
+    </util:properties>
+    
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager" p:entityManagerFactory-ref="entityManagerFactory" p:jpaDialect-ref="jpaDialect" />
+        
+    <beans profile="dev,prod">
+      <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close" name="ds">
+                <property name="driverClass" value="${jdbc.driverClassName}" />
+                <property name="jdbcUrl" value="${jdbc.url}" />
+                <property name="username" value="${jdbc.username}" />
+                <property name="password" value="${jdbc.password}" />
+                <property name="idleConnectionTestPeriod" value="${jdbc.idleConnectionTestPeriod}" />
+                <property name="idleMaxAge" value="${jdbc.idleMaxAge}" />
+                <property name="maxConnectionsPerPartition" value="${jdbc.maxConnectionsPerPartition}" />
+                <property name="minConnectionsPerPartition" value="${jdbc.minConnectionsPerPartition}" />
+                <property name="partitionCount" value="${jdbc.partitionCount}" />
+                <property name="acquireIncrement" value="${jdbc.acquireIncrement}" />
+                <property name="statementsCacheSize" value="${jdbc.statementsCacheSize}" />
+                <property name="releaseHelperThreads" value="${jdbc.releaseHelperThread}" />
+            </bean>
+    </beans>    
+        
+    <beans profile="test">
+	        <bean id="dataSource" class="com.p6spy.engine.spy.P6DataSource">
+	          <constructor-arg ref="dataSourceTemp"/>
+	        </bean>
+	               
+	        <jdbc:embedded-database type="HSQL" id="dataSourceTemp" />
+	        <jdbc:initialize-database data-source="dataSource" enabled="true">
+	            <jdbc:script location="classpath:initializeHsql.sql" />
+	        </jdbc:initialize-database>
+	        
+	
+	        <bean id="transactionNumberIncrementer" class="org.springframework.jdbc.support.incrementer.HsqlSequenceMaxValueIncrementer"
+	            p:dataSource-ref="dataSource" p:incrementerName="unique_id_seq" />
+      </beans>
+      
+      
+      <beans profile="dev">
+            <context:property-placeholder location="classpath:database_dev.properties" order="100" ignore-resource-not-found="true" ignore-unresolvable="true" 
+            properties-ref="defaultConfig" />
+      </beans>
+      
+      
+      <beans profile="dev_sql">
+       <context:property-placeholder location="classpath:database_dev.properties" order="100" ignore-resource-not-found="true" ignore-unresolvable="true" />
+       <bean id="dataSource" class="com.p6spy.engine.spy.P6DataSource">
+          <constructor-arg ref="dataSourceTemp"/>
+        </bean>
+        
+        <bean id="dataSourceTemp" class="com.jolbox.bonecp.BoneCPDataSource"
+            destroy-method="close">
+            <property name="driverClass" value="${jdbc.driverClassName}" />
+            <property name="jdbcUrl" value="${jdbc.url}" />
+            <property name="username" value="${jdbc.username}" />
+            <property name="password" value="${jdbc.password}" />
+            <property name="idleConnectionTestPeriod" value="${jdbc.idleConnectionTestPeriod}" />
+            <property name="idleMaxAge" value="${jdbc.idleMaxAge}" />
+            <property name="maxConnectionsPerPartition" value="${jdbc.maxConnectionsPerPartition}" />
+            <property name="minConnectionsPerPartition" value="${jdbc.minConnectionsPerPartition}" />
+            <property name="partitionCount" value="${jdbc.partitionCount}" />
+            <property name="acquireIncrement" value="${jdbc.acquireIncrement}" />
+            <property name="statementsCacheSize" value="${jdbc.statementsCacheSize}" />
+            <property name="releaseHelperThreads" value="${jdbc.releaseHelperThread}" />
+        </bean>
+      </beans>
+      
+      
+      <beans profile="prod">
+	        <context:property-placeholder  location="classpath:database_prod.properties"  order="100" ignore-resource-not-found="false" ignore-unresolvable="false"  />
+	
+      </beans>
+</beans>

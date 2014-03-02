@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	
+	<contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+		<resetJUL>true</resetJUL>
+	</contextListener>
+
+	<statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+
+	<!-- To enable JMX Management -->
+	<jmxConfigurator />
+	
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%.-1level|%-40.40logger{0}|%msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="console2" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36}:%L - %msg \(login: %X{login}\) %n</pattern>
+        </encoder>
+    </appender>
+
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>commonDao.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>/log/commonDao_%d{yyyy-MM-dd}.log
+			</fileNamePattern>
+			<!-- keep 30 days' worth of history -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+
+
+
+	<logger name="org.mortbay.log" level="INFO" />
+
+	<logger name="org.springframework" level="info" additivity="false">
+		<appender-ref ref="console" />
+	</logger>
+<!-- 
+   <logger name="org.hibernate.type" level="trace" additivity="false">
+        <appender-ref ref="console" />
+   </logger>
+
+	<logger name="org.hibernate.SQL" level="debug" additivity="false">
+		<appender-ref ref="console" />
+	</logger> -->
+	
+
+	<logger name="org.hibernate" level="info" additivity="false">
+		<appender-ref ref="console" />
+	</logger>
+
+	<logger name="pl.java" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="console" />
+	</logger>
+
+
+	<logger name="net.sf.ehcache" additivity="false">
+		<level value="INFO" />
+		<appender-ref ref="console" />
+	</logger>
+
+	<root level="info">
+		<appender-ref ref="console" />		
+	</root>
+</configuration>
