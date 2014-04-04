@@ -28,6 +28,8 @@ targetCompatibility = 1.7
 repositories {
     mavenCentral()
     mavenLocal()
+    maven { url "http://localhost:8487/nexus/content/groups/public/"}
+    maven { url "https://repository.jboss.org/nexus/content/groups/public/"}
     maven { url "http://repo.spring.io/libs-release-local/"}
     maven { url "http://repo.spring.io/libs-milestone" }
 }
@@ -37,13 +39,11 @@ sourceSets {
     main {
         java { srcDir 'src/main/java' }
         groovy { srcDir 'src/main/groovy' }
-        scala { srcDir 'src/main/scala' }
         resources { srcDir 'src/main/resources' }
     }
     test {
         java { srcDir 'src/test/java' }
         groovy { srcDir 'src/test/groovy' }
-        scala { srcDir 'src/test/scala' }
         resources { srcDir 'src/test/resources' }
     }
 }
