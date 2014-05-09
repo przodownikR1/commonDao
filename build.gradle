@@ -1,5 +1,4 @@
 apply plugin: "groovy"
-apply plugin: "scala"
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
@@ -16,8 +15,8 @@ description = "common dao"
 applicationDefaultJvmArgs = ["-Dfile.encoding=UTF=8"]
 libsDirName = './target'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 [compileJava, compileTestJava]*.options*.compilerArgs = [
     "-Xlint:none",
@@ -25,6 +24,14 @@ targetCompatibility = 1.7
     "-encoding",
     "UTF-8"
 ]
+
+install {
+    repositories.mavenInstaller {
+        pom.version = '0.0.1'
+        pom.artifactId = 'commonDao'
+        pom.groupId = 'pl.java.scalatech'
+    }
+}
 
 repositories {
     mavenCentral()
@@ -38,13 +45,11 @@ sourceSets {
     main {
         java { srcDir 'src/main/java' }
         groovy { srcDir 'src/main/groovy' }
-        scala { srcDir 'src/main/scala' }
         resources { srcDir 'src/main/resources' }
     }
     test {
         java { srcDir 'src/test/java' }
         groovy { srcDir 'src/test/groovy' }
-        scala { srcDir 'src/test/scala' }
         resources { srcDir 'src/test/resources' }
     }
 }
@@ -75,7 +80,7 @@ dependencies {
      
     compile("com.jolbox:bonecp-spring:${bonecpVersion}" )
        
-    compile("com.jolbox:bonecp-provider:${bonecpVersion}")
+    compile("com.jolbox:bonecp-provider:${bonecpProviderVersion}")
      
     compile("org.jasypt:jasypt:${jasyptVersion}")
     runtime("org.hsqldb:hsqldb:${hsqldbVersion}")
@@ -119,7 +124,7 @@ jar {
 
     exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
     manifest {
-        attributes 'Implementation-Title': 'Gradle camel-cxf',
+        attributes 'Implementation-Title': 'commondao',
         'Implementation-Version': version,
         'Built-By': System.getProperty('user.name'),
         'Built-Date': new Date(),

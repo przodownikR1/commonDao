@@ -31,15 +31,15 @@ public abstract class ConfigDB {
     protected final static String CONFIG_PROD_DIALECT = "PostgreSQL9Dialect";
     protected final static String TEST_DIALECT = "HSQLDialect";
     
-    protected final static String HBM2DDL = "hibernate.hbm2ddl.auto";// update
-    protected final static String SHOW_SQL = "hibernate.show_sql";// true
-    protected final static String CONNECTION_CHARSET = "hibernate.connection.charSet";// UTF-8
-    protected final static String BATCH_FETCH_SIZE = "hibernate.default_batch_fetch_size";// 25
-    protected final static String QUERY_CACHE = "hibernate.cache.use_query_cache";// true
-    protected final static String SECOND_LEVEL_CACHE = "hibernate.cache.use_second_level_cache";// true
-    protected final static String PERSISTENCE_UNIT_NAME = "hibernate.ejb.persistenceUnitName";// unitPU
-    protected final static String REGION_FACTORY = "hibernate.cache.region.factory_class";// org.hibernate.cache.ehcache.EhCacheRegionFactory
-    protected final static String DIALECT = "hibernate.dialect";// org.hibernate.dialect.HSQLDialect
+    protected final static String HBM2DDL = "hibernate.hbm2ddl.auto";
+    protected final static String SHOW_SQL = "hibernate.show_sql";
+    protected final static String CONNECTION_CHARSET = "hibernate.connection.charSet";
+    protected final static String BATCH_FETCH_SIZE = "hibernate.default_batch_fetch_size";
+    protected final static String QUERY_CACHE = "hibernate.cache.use_query_cache";
+    protected final static String SECOND_LEVEL_CACHE = "hibernate.cache.use_second_level_cache";
+    protected final static String PERSISTENCE_UNIT_NAME = "hibernate.ejb.persistenceUnitName";
+    protected final static String REGION_FACTORY = "hibernate.cache.region.factory_class";
+    protected final static String DIALECT = "hibernate.dialect";
     
     protected final static String EXPECTED_BEANS[] = new String[] { "entityManagerFactory", "jpaProperties", "transactionManager" };
     @Autowired
