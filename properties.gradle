@@ -20,7 +20,7 @@ ext {
       groovyVersion = "2.2.1"
       lombokVersion = "1.12.4"
       guavaVersion = "16.0.1"
-      javaVersion = "1.7"   
+      javaVersion = "1.8"   
       mysqlVersion = "5.1.29"   
       postgresqlVersion = "9.3-1101-jdbc41"
       jasyptVersion = "1.9.2"
