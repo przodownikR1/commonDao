@@ -13,6 +13,7 @@ ext {
       springDataJPAVersion = "1.5.0.RELEASE"
       javaxValidationVersion = "1.1.0.Final"
       hibernateValidatorVersion = "5.0.3.Final"
+
       bonecpVersion = "0.8.0.RELEASE"
       bonecpProviderVersion = "0.8.0-alpha1"
       hsqldbVersion = "2.3.2"

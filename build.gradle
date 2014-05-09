@@ -1,3 +1,4 @@
+
 apply plugin: "groovy"
 apply plugin: 'java'
 apply plugin: 'eclipse'
@@ -36,6 +37,8 @@ install {
 repositories {
     mavenCentral()
     mavenLocal()
+    maven { url "http://localhost:8487/nexus/content/groups/public/"}
+    maven { url "https://repository.jboss.org/nexus/content/groups/public/"}
     maven { url "http://repo.spring.io/libs-release-local/"}
     maven { url "http://repo.spring.io/libs-milestone" }
 }
